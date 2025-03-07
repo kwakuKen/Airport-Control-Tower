@@ -1,10 +1,15 @@
 using Microsoft.OpenApi.Models;
+using AirportControlTower.Application;
+using AirportControlTower.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration);
 
 
 // Add Swagger
