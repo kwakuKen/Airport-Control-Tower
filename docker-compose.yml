@@ -1,0 +1,53 @@
+version: '3.8'
+
+networks:
+  airport_network:
+    driver: bridge
+
+services:
+  airportcontroltower.api:
+    build:
+      context: .
+      dockerfile: AirportControlTower.API/Dockerfile
+    ports:
+      - "6000:8080"
+      - "6100:8081"
+    depends_on:
+      - postgres
+    environment:
+      - CONNECTION_STRING=User ID=admin;Password=adminamin;Server=host.docker.internal;Port=5432;Database=airport_control_tower;
+    restart: always
+    networks:
+      - airport_network
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminamin
+      POSTGRES_DB: airport_control_tower
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - airport_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - airport_network
+
+volumes:
+  postgres_data:
