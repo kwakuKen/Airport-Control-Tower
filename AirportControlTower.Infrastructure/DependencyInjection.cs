@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AirportControlTower.Domain.Interfaces;
+using AirportControlTower.Infrastructure.BackgroundJobs;
+using AirportControlTower.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,10 +13,23 @@ public static class DependencyInjection
         this IServiceCollection services,
          IConfiguration configuration)
     {
-        string? connectionString = configuration.GetConnectionString("PostgresConnection");
+        string? connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
+            ?? configuration.GetConnectionString("PostgresConnection");
 
         services.AddDbContext<AirportControlTowerDbContext>(options =>
-    options.UseNpgsql(connectionString));
+            options.UseNpgsql(connectionString));
+
+        using (var serviceProvider = services.BuildServiceProvider())
+        {
+            var context = serviceProvider.GetRequiredService<AirportControlTowerDbContext>();
+            context.Database.Migrate();
+        }
+
+        services.AddHostedService<GetWeatherUpdateJob>();
+
+        services.AddScoped<IAircraftWriteRepository, AircraftRepository>();
+        services.AddScoped<IAircraftReadRepository, AircraftRepository>();
+
         return services;
     }
 }

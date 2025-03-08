@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AirportControlTower.Application.BackgroundJobs;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AirportControlTower.Application;
 
@@ -10,6 +11,8 @@ public static class DependencyInjection
         {
             config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
         });
+
+        services.AddHostedService<GroundCrewJob>();
 
         return services;
     }
