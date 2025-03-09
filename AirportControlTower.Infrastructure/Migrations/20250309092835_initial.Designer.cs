@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AirportControlTower.Infrastructure.Migrations
 {
     [DbContext(typeof(AirportControlTowerDbContext))]
-    [Migration("20250308211707_initial")]
+    [Migration("20250309092835_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -36,6 +36,9 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.Property<string>("CallSign")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("PublicKey")
                         .HasColumnType("text");
@@ -65,12 +68,12 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.Property<int>("AircraftId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -89,6 +92,9 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     b.Property<int?>("AircraftId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsOccupied")
                         .HasColumnType("boolean");
@@ -114,11 +120,11 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<double>("Temperature")
                         .HasColumnType("double precision");

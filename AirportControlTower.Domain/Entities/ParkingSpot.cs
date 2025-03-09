@@ -1,8 +1,7 @@
 ﻿namespace AirportControlTower.Domain.Entities;
 
-public class ParkingSpot
+public class ParkingSpot : ExtraEntity
 {
-    public int Id { get; set; }
     public string Type { get; set; } = default!;
     public bool IsOccupied { get; set; }
     public int? AircraftId { get; set; }

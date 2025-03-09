@@ -2,7 +2,8 @@
 
 namespace AirportControlTower.Infrastructure.Repositories;
 
-public class AircraftRepository : IAircraftReadRepository, 
+public class AircraftRepository 
+    : IAircraftReadRepository, 
     IAircraftWriteRepository
 {
 }

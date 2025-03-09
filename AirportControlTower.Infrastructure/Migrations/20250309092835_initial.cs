@@ -20,7 +20,8 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     CallSign = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: true),
-                    PublicKey = table.Column<string>(type: "text", nullable: true)
+                    PublicKey = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,7 +39,7 @@ namespace AirportControlTower.Infrastructure.Migrations
                     Visibility = table.Column<int>(type: "integer", nullable: false),
                     WindSpeed = table.Column<double>(type: "double precision", nullable: false),
                     WindDirection = table.Column<int>(type: "integer", nullable: false),
-                    LastUpdate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -53,8 +54,8 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AircraftId = table.Column<int>(type: "integer", nullable: false),
                     State = table.Column<string>(type: "text", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Accepted = table.Column<bool>(type: "boolean", nullable: false)
+                    Accepted = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -75,7 +76,8 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Type = table.Column<string>(type: "text", nullable: false),
                     IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
-                    AircraftId = table.Column<int>(type: "integer", nullable: true)
+                    AircraftId = table.Column<int>(type: "integer", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

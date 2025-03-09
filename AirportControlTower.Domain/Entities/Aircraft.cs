@@ -1,8 +1,7 @@
 ﻿namespace AirportControlTower.Domain.Entities;
 
-public class Aircraft
+public class Aircraft: ExtraEntity
 {
-    public int Id { get; set; }
     public string CallSign { get; set; } = default!;
     public string? Type { get; set; }
     public string? PublicKey { get; set; }

@@ -29,6 +29,8 @@ public static class DependencyInjection
 
         services.AddScoped<IAircraftWriteRepository, AircraftRepository>();
         services.AddScoped<IAircraftReadRepository, AircraftRepository>();
+        services.AddScoped<IWeatherWriteRepository, WeatherRepository>();
+        services.AddScoped<IWeatherReadRepository, WeatherRepository>();
 
         return services;
     }

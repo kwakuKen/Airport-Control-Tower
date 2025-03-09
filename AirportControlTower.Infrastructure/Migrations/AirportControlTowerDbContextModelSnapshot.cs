@@ -34,6 +34,9 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("PublicKey")
                         .HasColumnType("text");
 
@@ -62,12 +65,12 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.Property<int>("AircraftId")
                         .HasColumnType("integer");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -86,6 +89,9 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     b.Property<int?>("AircraftId")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("IsOccupied")
                         .HasColumnType("boolean");
@@ -111,11 +117,11 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .HasColumnType("text");
-
-                    b.Property<DateTime>("LastUpdate")
-                        .HasColumnType("timestamp with time zone");
 
                     b.Property<double>("Temperature")
                         .HasColumnType("double precision");

@@ -4,14 +4,12 @@ using System;
 
 namespace AirportControlTower.Infrastructure;
 
-public class AirportControlTowerDbContext : DbContext
+public class AirportControlTowerDbContext(DbContextOptions<AirportControlTowerDbContext> options) : DbContext(options)
 {
     public DbSet<Aircraft> Aircrafts { get; set; }
     public DbSet<FlightLogs> FlightLogs { get; set; }
     public DbSet<ParkingSpot> ParkingSpots { get; set; }
     public DbSet<Weather> WeatherRecords { get; set; }
-
-    public AirportControlTowerDbContext(DbContextOptions<AirportControlTowerDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
