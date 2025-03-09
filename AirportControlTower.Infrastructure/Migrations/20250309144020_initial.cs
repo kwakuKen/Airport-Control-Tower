@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AirportControlTower.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class databasechange : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -79,7 +79,6 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AircraftId = table.Column<int>(type: "integer", nullable: false),
                     FlightRequstId = table.Column<int>(type: "integer", nullable: false),
-                    FlightRequestId = table.Column<int>(type: "integer", nullable: true),
                     CallSign = table.Column<string>(type: "text", nullable: false),
                     State = table.Column<string>(type: "text", nullable: false),
                     IsAccepted = table.Column<bool>(type: "boolean", nullable: false),
@@ -96,10 +95,11 @@ namespace AirportControlTower.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FlightLogs_FlightRequest_FlightRequestId",
-                        column: x => x.FlightRequestId,
+                        name: "FK_FlightLogs_FlightRequest_FlightRequstId",
+                        column: x => x.FlightRequstId,
                         principalTable: "FlightRequest",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -123,9 +123,9 @@ namespace AirportControlTower.Infrastructure.Migrations
                 column: "AircraftId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FlightLogs_FlightRequestId",
+                name: "IX_FlightLogs_FlightRequstId",
                 table: "FlightLogs",
-                column: "FlightRequestId");
+                column: "FlightRequstId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FlightRequest_AircraftId",

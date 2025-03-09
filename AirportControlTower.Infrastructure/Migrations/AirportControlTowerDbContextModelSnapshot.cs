@@ -89,9 +89,6 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("FlightRequestId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("FlightRequstId")
                         .HasColumnType("integer");
 
@@ -110,7 +107,7 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     b.HasIndex("AircraftId");
 
-                    b.HasIndex("FlightRequestId");
+                    b.HasIndex("FlightRequstId");
 
                     b.ToTable("FlightLogs");
                 });
@@ -187,8 +184,10 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("AirportControlTower.Domain.Entities.FlightRequest", "FlightRequest")
-                        .WithMany()
-                        .HasForeignKey("FlightRequestId");
+                        .WithMany("FlightLogs")
+                        .HasForeignKey("FlightRequstId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Aircraft");
 
@@ -207,6 +206,11 @@ namespace AirportControlTower.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("AirportControlTower.Domain.Entities.Aircraft", b =>
+                {
+                    b.Navigation("FlightLogs");
+                });
+
+            modelBuilder.Entity("AirportControlTower.Domain.Entities.FlightRequest", b =>
                 {
                     b.Navigation("FlightLogs");
                 });

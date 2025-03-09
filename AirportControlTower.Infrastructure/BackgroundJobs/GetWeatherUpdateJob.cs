@@ -31,26 +31,24 @@ public class GetWeatherUpdateJob : BackgroundService
 
             try
             {
-                using (var scope = _serviceScopeFactory.CreateScope())
-                {
-                    var weatherWriteRepository = scope.ServiceProvider.GetRequiredService<IWeatherWriteRepository>();
+                using var scope = _serviceScopeFactory.CreateScope();
+                var weatherWriteRepository = scope.ServiceProvider.GetRequiredService<IWeatherWriteRepository>();
 
-                    var response = await WeatherClient.GetWeatherAsync("Accra");
-                    if (response is not null)
-                    {
-                        await weatherWriteRepository.AddWeatherAsync(
-                            new Weather
-                            {
-                                CreatedAt = DateTime.UtcNow,
-                                Description = response.weather[0].description,
-                                Visibility = response.visibility,
-                                Temperature = response.main.temp,
-                                WindSpeed = response.wind.speed,
-                                WindDirection = response.wind.deg
-                            },
-                            stoppingToken
-                        );
-                    }
+                var response = await WeatherClient.GetWeatherAsync("Accra");
+                if (response is not null)
+                {
+                    await weatherWriteRepository.AddWeatherAsync(
+                        new Weather
+                        {
+                            CreatedAt = DateTime.UtcNow,
+                            Description = response.weather[0].description,
+                            Visibility = response.visibility,
+                            Temperature = response.main.temp,
+                            WindSpeed = response.wind.speed,
+                            WindDirection = response.wind.deg
+                        },
+                        stoppingToken
+                    );
                 }
             }
             catch (Exception ex)

@@ -16,7 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Aircraft\Command\" />
     <Folder Include="Aircraft\Queries\" />
   </ItemGroup>
 

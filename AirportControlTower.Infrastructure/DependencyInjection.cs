@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddScoped<IAircraftReadRepository, AircraftRepository>();
         services.AddScoped<IWeatherWriteRepository, WeatherRepository>();
         services.AddScoped<IWeatherReadRepository, WeatherRepository>();
+        services.AddScoped<IGroundCrewRepository, GroundCrewRepository>();
 
 
 
