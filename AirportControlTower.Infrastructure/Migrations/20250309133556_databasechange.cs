@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace AirportControlTower.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class databasechange : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +23,7 @@ namespace AirportControlTower.Infrastructure.Migrations
                     CallSign = table.Column<string>(type: "text", nullable: false),
                     Type = table.Column<string>(type: "text", nullable: true),
                     PublicKey = table.Column<string>(type: "text", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()")
                 },
                 constraints: table =>
                 {
@@ -47,14 +49,41 @@ namespace AirportControlTower.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FlightLogs",
+                name: "FlightRequest",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AircraftId = table.Column<int>(type: "integer", nullable: false),
                     State = table.Column<string>(type: "text", nullable: false),
-                    Accepted = table.Column<bool>(type: "boolean", nullable: false),
+                    CallSign = table.Column<string>(type: "text", nullable: false),
+                    IsCompleteCycle = table.Column<bool>(type: "boolean", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FlightRequest", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FlightRequest_Aircrafts_AircraftId",
+                        column: x => x.AircraftId,
+                        principalTable: "Aircrafts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FlightLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AircraftId = table.Column<int>(type: "integer", nullable: false),
+                    FlightRequstId = table.Column<int>(type: "integer", nullable: false),
+                    FlightRequestId = table.Column<int>(type: "integer", nullable: true),
+                    CallSign = table.Column<string>(type: "text", nullable: false),
+                    State = table.Column<string>(type: "text", nullable: false),
+                    IsAccepted = table.Column<bool>(type: "boolean", nullable: false),
+                    Reason = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -66,27 +95,20 @@ namespace AirportControlTower.Infrastructure.Migrations
                         principalTable: "Aircrafts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FlightLogs_FlightRequest_FlightRequestId",
+                        column: x => x.FlightRequestId,
+                        principalTable: "FlightRequest",
+                        principalColumn: "Id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "ParkingSpots",
-                columns: table => new
+            migrationBuilder.InsertData(
+                table: "Aircrafts",
+                columns: new[] { "Id", "CallSign", "PublicKey", "Type" },
+                values: new object[,]
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Type = table.Column<string>(type: "text", nullable: false),
-                    IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
-                    AircraftId = table.Column<int>(type: "integer", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ParkingSpots", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ParkingSpots_Aircrafts_AircraftId",
-                        column: x => x.AircraftId,
-                        principalTable: "Aircrafts",
-                        principalColumn: "Id");
+                    { 1, "NC9574", "AAAAB3NzaC1yc2E", "AIRLINER" },
+                    { 2, "NC9222", "AAAAB3NzaC1yc2E", "PRIVATE" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -101,14 +123,14 @@ namespace AirportControlTower.Infrastructure.Migrations
                 column: "AircraftId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParkingSpots_AircraftId",
-                table: "ParkingSpots",
-                column: "AircraftId");
+                name: "IX_FlightLogs_FlightRequestId",
+                table: "FlightLogs",
+                column: "FlightRequestId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParkingSpots_Type",
-                table: "ParkingSpots",
-                column: "Type");
+                name: "IX_FlightRequest_AircraftId",
+                table: "FlightRequest",
+                column: "AircraftId");
         }
 
         /// <inheritdoc />
@@ -118,10 +140,10 @@ namespace AirportControlTower.Infrastructure.Migrations
                 name: "FlightLogs");
 
             migrationBuilder.DropTable(
-                name: "ParkingSpots");
+                name: "WeatherRecords");
 
             migrationBuilder.DropTable(
-                name: "WeatherRecords");
+                name: "FlightRequest");
 
             migrationBuilder.DropTable(
                 name: "Aircrafts");

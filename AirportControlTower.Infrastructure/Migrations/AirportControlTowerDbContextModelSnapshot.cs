@@ -35,7 +35,9 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
 
                     b.Property<string>("PublicKey")
                         .HasColumnType("text");
@@ -49,6 +51,24 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Aircrafts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CallSign = "NC9574",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PublicKey = "AAAAB3NzaC1yc2E",
+                            Type = "AIRLINER"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CallSign = "NC9222",
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            PublicKey = "AAAAB3NzaC1yc2E",
+                            Type = "PRIVATE"
+                        });
                 });
 
             modelBuilder.Entity("AirportControlTower.Domain.Entities.FlightLogs", b =>
@@ -59,14 +79,28 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Accepted")
-                        .HasColumnType("boolean");
-
                     b.Property<int>("AircraftId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("CallSign")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("FlightRequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("FlightRequstId")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsAccepted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("State")
                         .IsRequired()
@@ -76,10 +110,12 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     b.HasIndex("AircraftId");
 
+                    b.HasIndex("FlightRequestId");
+
                     b.ToTable("FlightLogs");
                 });
 
-            modelBuilder.Entity("AirportControlTower.Domain.Entities.ParkingSpot", b =>
+            modelBuilder.Entity("AirportControlTower.Domain.Entities.FlightRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,16 +123,20 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AircraftId")
+                    b.Property<int>("AircraftId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("CallSign")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("IsOccupied")
+                    b.Property<bool>("IsCompleteCycle")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("State")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -104,9 +144,7 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     b.HasIndex("AircraftId");
 
-                    b.HasIndex("Type");
-
-                    b.ToTable("ParkingSpots");
+                    b.ToTable("FlightRequest");
                 });
 
             modelBuilder.Entity("AirportControlTower.Domain.Entities.Weather", b =>
@@ -148,14 +186,22 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("AirportControlTower.Domain.Entities.FlightRequest", "FlightRequest")
+                        .WithMany()
+                        .HasForeignKey("FlightRequestId");
+
                     b.Navigation("Aircraft");
+
+                    b.Navigation("FlightRequest");
                 });
 
-            modelBuilder.Entity("AirportControlTower.Domain.Entities.ParkingSpot", b =>
+            modelBuilder.Entity("AirportControlTower.Domain.Entities.FlightRequest", b =>
                 {
                     b.HasOne("AirportControlTower.Domain.Entities.Aircraft", "Aircraft")
                         .WithMany()
-                        .HasForeignKey("AircraftId");
+                        .HasForeignKey("AircraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Aircraft");
                 });
