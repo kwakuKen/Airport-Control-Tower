@@ -20,7 +20,7 @@ public class GroundCrewJob(ILogger<GroundCrewJob> _logger,
                     {
                         _isJobRunning = true;
                     }
-                    //fetch weather details
+                   //fetch data 
                     _logger.LogInformation("GroundCrewJob Started ");
                 }
                 catch (Exception ex)

@@ -8,19 +8,19 @@ public class WeatherRepository(AirportControlTowerDbContext _context)
     : IWeatherReadRepository, 
     IWeatherWriteRepository
 {
-    public async Task AddWeatherAsync(Weather weather)
+    public async Task AddWeatherAsync(Weather weather, CancellationToken cancellationToken)
     {
-        await _context.WeatherRecords.AddAsync(weather);
-        await _context.SaveChangesAsync();
+        await _context.WeatherRecords.AddAsync(weather, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<List<Weather>> GetAllWeatherAsync()
+    public async Task<List<Weather>> GetAllWeatherAsync(CancellationToken cancellationToken)
     {
-        return await _context.WeatherRecords.ToListAsync();
+        return await _context.WeatherRecords.ToListAsync(cancellationToken);
     }
 
-    public async Task<Weather?> GetWeatherByIdAsync(int id)
+    public async Task<Weather?> GetWeatherByIdAsync(int id, CancellationToken cancellationToken)
     {
-        return await _context.WeatherRecords.FindAsync(id);
+        return await _context.WeatherRecords.FindAsync(id, cancellationToken);
     }
 }

@@ -1,41 +1,71 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using AirportControlTower.Domain.Entities;
+using AirportControlTower.Domain.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace AirportControlTower.Infrastructure.BackgroundJobs;
 
-public class GetWeatherUpdateJob(ILogger<GetWeatherUpdateJob> _logger,
-    bool _isJobRunning = false)
-    : BackgroundService
+public class GetWeatherUpdateJob : BackgroundService
 {
-    private readonly object _lock = new object();
+    private readonly ILogger<GetWeatherUpdateJob> _logger;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
+    private bool _isJobRunning;
+    private readonly object _lock = new();
+
+    public GetWeatherUpdateJob(ILogger<GetWeatherUpdateJob> logger, IServiceScopeFactory serviceScopeFactory)
+    {
+        _logger = logger;
+        _serviceScopeFactory = serviceScopeFactory;
+    }
+
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (!_isJobRunning)
+            lock (_lock)
             {
-                try
+                if (_isJobRunning) return; // Prevent multiple executions
+                _isJobRunning = true;
+            }
+
+            try
+            {
+                using (var scope = _serviceScopeFactory.CreateScope())
                 {
-                    lock (_lock)
+                    var weatherWriteRepository = scope.ServiceProvider.GetRequiredService<IWeatherWriteRepository>();
+
+                    var response = await WeatherClient.GetWeatherAsync("Accra");
+                    if (response is not null)
                     {
-                        _isJobRunning = true;
-                    }
-                    //fetch weather details
-                    _logger.LogInformation("Getting weather details");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error occured while executin the job >>>>> {ex.Message}");
-                }
-                finally
-                {
-                    lock (_lock)
-                    {
-                        _isJobRunning = false;
+                        await weatherWriteRepository.AddWeatherAsync(
+                            new Weather
+                            {
+                                CreatedAt = DateTime.UtcNow,
+                                Description = response.weather[0].description,
+                                Visibility = response.visibility,
+                                Temperature = response.main.temp,
+                                WindSpeed = response.wind.speed,
+                                WindDirection = response.wind.deg
+                            },
+                            stoppingToken
+                        );
                     }
                 }
             }
-            await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error occurred while executing the job: {ex.Message}");
+            }
+            finally
+            {
+                lock (_lock)
+                {
+                    _isJobRunning = false;
+                }
+            }
+
+            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
         }
     }
 }

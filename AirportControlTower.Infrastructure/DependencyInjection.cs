@@ -4,6 +4,7 @@ using AirportControlTower.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace AirportControlTower.Infrastructure;
 
@@ -25,12 +26,14 @@ public static class DependencyInjection
             context.Database.Migrate();
         }
 
-        services.AddHostedService<GetWeatherUpdateJob>();
+        services.AddSingleton<IHostedService, GetWeatherUpdateJob>();
 
         services.AddScoped<IAircraftWriteRepository, AircraftRepository>();
         services.AddScoped<IAircraftReadRepository, AircraftRepository>();
         services.AddScoped<IWeatherWriteRepository, WeatherRepository>();
         services.AddScoped<IWeatherReadRepository, WeatherRepository>();
+
+
 
         return services;
     }
