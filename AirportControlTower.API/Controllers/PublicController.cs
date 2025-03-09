@@ -6,7 +6,8 @@ namespace AirportControlTower.API.Controllers;
 
 [Route("api/public/{callSign}/weather")]
 [ApiController]
-public class PublicController(ISender sender) : ControllerBase
+public class PublicController(ISender sender) 
+    : ControllerBase
 {
     private readonly ISender _sender = sender;
 

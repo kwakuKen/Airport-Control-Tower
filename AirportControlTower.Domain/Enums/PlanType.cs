@@ -2,6 +2,6 @@
 
 public enum PlanType
 {
-    PRIVATE = 1,
+    PRIVATE,
     AIRLINER
 }

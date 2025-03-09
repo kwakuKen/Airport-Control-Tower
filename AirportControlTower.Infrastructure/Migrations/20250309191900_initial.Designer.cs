@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AirportControlTower.Infrastructure.Migrations
 {
     [DbContext(typeof(AirportControlTowerDbContext))]
-    [Migration("20250309144020_initial")]
+    [Migration("20250309191900_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -126,6 +126,9 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.Property<int>("AircraftId")
                         .HasColumnType("integer");
 
+                    b.Property<long?>("Altitude")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("CallSign")
                         .IsRequired()
                         .HasColumnType("text");
@@ -133,11 +136,23 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<long?>("Heading")
+                        .HasColumnType("bigint");
+
                     b.Property<bool>("IsCompleteCycle")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Latitude")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Longitude")
+                        .HasColumnType("text");
+
                     b.Property<string>("State")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

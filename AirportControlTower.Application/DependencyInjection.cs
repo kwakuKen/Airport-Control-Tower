@@ -1,6 +1,7 @@
 ﻿using AirportControlTower.Application.BackgroundJobs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace AirportControlTower.Application;
 
@@ -10,10 +11,11 @@ public static class DependencyInjection
     {
         services.AddMediatR(config =>
         {
-            config.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+            config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });
 
         services.AddSingleton<IHostedService, GroundCrewJob>();
+
 
         return services;
     }

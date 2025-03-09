@@ -30,6 +30,20 @@ public class AircraftRepository(AirportControlTowerDbContext _context)
     public async Task<FlightLogs?> GetFlightLogsByIdAsync(int id, CancellationToken cancellationToken)
     {
         return await _context.FlightLogs
-            .FindAsync(id, cancellationToken);
+            .FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
+    }
+
+    public async Task<FlightRequest?> GetLastFlightLogsAsync(string callSign, CancellationToken cancellationToken)
+    {
+        return await _context.FlightRequest
+            .Where(FlightRequest => FlightRequest.CallSign == callSign)
+            .OrderByDescending(x => x.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<int> UpdateFlightRequestAsync(FlightRequest flightRequest, CancellationToken cancellationToken)
+    {
+        _context.FlightRequest.Update(flightRequest);
+        return await _context.SaveChangesAsync(cancellationToken);
     }
 }

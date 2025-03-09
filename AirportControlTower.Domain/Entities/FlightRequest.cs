@@ -14,9 +14,3 @@ public class FlightRequest : ExtraEntity
     public bool IsCompleteCycle { get; set; }
     public ICollection<FlightLogs>? FlightLogs { get; set; }
 }
-
-"type": "AIRLINER|PRIVATE", 
-"latitude": "44.82128505247063", 
-"longitude": "20.455516172478386", 
-"altitude": 3500, 
-"heading": 220 

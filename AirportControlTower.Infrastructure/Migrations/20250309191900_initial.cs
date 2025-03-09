@@ -57,6 +57,11 @@ namespace AirportControlTower.Infrastructure.Migrations
                     AircraftId = table.Column<int>(type: "integer", nullable: false),
                     State = table.Column<string>(type: "text", nullable: false),
                     CallSign = table.Column<string>(type: "text", nullable: false),
+                    Type = table.Column<string>(type: "text", nullable: true),
+                    Latitude = table.Column<string>(type: "text", nullable: true),
+                    Longitude = table.Column<string>(type: "text", nullable: true),
+                    Altitude = table.Column<long>(type: "bigint", nullable: true),
+                    Heading = table.Column<long>(type: "bigint", nullable: true),
                     IsCompleteCycle = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },

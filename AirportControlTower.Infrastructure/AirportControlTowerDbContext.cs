@@ -5,15 +5,9 @@ using System.Xml;
 
 namespace AirportControlTower.Infrastructure;
 
-public class AirportControlTowerDbContext
-    : DbContext
+public class AirportControlTowerDbContext(DbContextOptions<AirportControlTowerDbContext> options)
+        : DbContext(options)
 {
-    private readonly DateTime _createdOn = DateTime.UtcNow;
-    public AirportControlTowerDbContext(DbContextOptions<AirportControlTowerDbContext> options)
-        : base(options)
-    {
-    }
-
     public DbSet<Aircraft> Aircrafts { get; set; }
     public DbSet<FlightLogs> FlightLogs { get; set; }
     public DbSet<FlightRequest> FlightRequest { get; set; }
