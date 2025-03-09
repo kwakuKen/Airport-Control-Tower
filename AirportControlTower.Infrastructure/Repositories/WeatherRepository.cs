@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AirportControlTower.Infrastructure.Repositories;
 
-public class WeatherRepository(AirportControlTowerDbContext _context) 
-    : IWeatherReadRepository, 
+public class WeatherRepository(AirportControlTowerDbContext _context)
+    : IWeatherReadRepository,
     IWeatherWriteRepository
 {
     public async Task AddWeatherAsync(Weather weather, CancellationToken cancellationToken)
@@ -16,11 +16,20 @@ public class WeatherRepository(AirportControlTowerDbContext _context)
 
     public async Task<List<Weather>> GetAllWeatherAsync(CancellationToken cancellationToken)
     {
-        return await _context.WeatherRecords.ToListAsync(cancellationToken);
+        return await _context.WeatherRecords
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<Weather?> GetCurrentWeatherAsync(CancellationToken cancellationToken)
+    {
+        return await _context.WeatherRecords
+            .OrderByDescending(x => x.Id)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<Weather?> GetWeatherByIdAsync(int id, CancellationToken cancellationToken)
     {
-        return await _context.WeatherRecords.FindAsync(id, cancellationToken);
+        return await _context.WeatherRecords
+            .FindAsync(id, cancellationToken);
     }
 }
