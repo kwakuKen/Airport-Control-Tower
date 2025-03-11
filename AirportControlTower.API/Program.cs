@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using AirportControlTower.Application;
 using AirportControlTower.Infrastructure;
+using AirportControlTower.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,8 @@ builder.Services.AddSwaggerGen(options =>
 
 
 var app = builder.Build();
+
+app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
