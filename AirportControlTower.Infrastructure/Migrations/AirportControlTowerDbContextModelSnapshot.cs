@@ -79,7 +79,7 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AircraftId")
+                    b.Property<int?>("AircraftId")
                         .HasColumnType("integer");
 
                     b.Property<string>("CallSign")
@@ -89,7 +89,7 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("FlightRequstId")
+                    b.Property<int?>("FlightRequestId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("IsAccepted")
@@ -107,7 +107,7 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     b.HasIndex("AircraftId");
 
-                    b.HasIndex("FlightRequstId");
+                    b.HasIndex("FlightRequestId");
 
                     b.ToTable("FlightLogs");
                 });
@@ -150,6 +150,7 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Type")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -192,21 +193,13 @@ namespace AirportControlTower.Infrastructure.Migrations
 
             modelBuilder.Entity("AirportControlTower.Domain.Entities.FlightLogs", b =>
                 {
-                    b.HasOne("AirportControlTower.Domain.Entities.Aircraft", "Aircraft")
+                    b.HasOne("AirportControlTower.Domain.Entities.Aircraft", null)
                         .WithMany("FlightLogs")
-                        .HasForeignKey("AircraftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AircraftId");
 
-                    b.HasOne("AirportControlTower.Domain.Entities.FlightRequest", "FlightRequest")
+                    b.HasOne("AirportControlTower.Domain.Entities.FlightRequest", null)
                         .WithMany("FlightLogs")
-                        .HasForeignKey("FlightRequstId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Aircraft");
-
-                    b.Navigation("FlightRequest");
+                        .HasForeignKey("FlightRequestId");
                 });
 
             modelBuilder.Entity("AirportControlTower.Domain.Entities.FlightRequest", b =>

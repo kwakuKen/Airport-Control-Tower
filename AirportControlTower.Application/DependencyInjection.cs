@@ -1,4 +1,5 @@
 ﻿using AirportControlTower.Application.BackgroundJobs;
+using AirportControlTower.Application.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
@@ -15,6 +16,7 @@ public static class DependencyInjection
         });
 
         services.AddSingleton<IHostedService, GroundCrewJob>();
+        services.AddScoped<IFlightService, FlightService>();
 
 
         return services;
