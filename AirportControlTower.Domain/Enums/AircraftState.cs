@@ -1,8 +1,14 @@
-﻿namespace AirportControlTower.Domain.Enums;
+﻿using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+
+namespace AirportControlTower.Domain.Enums;
 
 public enum AircraftState
 {
-    PARKED = 1,
+    PARKED,
+
+    [EnumMember(Value = "TAKE-OFF")]
+    [JsonPropertyName("TAKE-OFF")]
     TAKEOFF,
     AIRBORNE,
     APPROACH,

@@ -1,4 +1,5 @@
-﻿using AirportControlTower.Application.Aircraft.Command.Location;
+﻿using AirportControlTower.Application.Aircraft.Command.Intent;
+using AirportControlTower.Application.Aircraft.Command.Location;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,21 @@ namespace AirportControlTower.API.Controllers
 
             var result = await _sender.Send(command);
             return result == -1 ? BadRequest() : NoContent();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Intent([FromRoute] string callSign, [FromBody] IntentCommandDto request)
+        {
+            var command = new IntentCommand(
+                request.State,
+                callSign);
+
+            var result = await _sender.Send(command);
+            return result == -1 ?
+                BadRequest() :
+                result == -2 ?
+                Conflict() :
+                NoContent();
         }
 
     }

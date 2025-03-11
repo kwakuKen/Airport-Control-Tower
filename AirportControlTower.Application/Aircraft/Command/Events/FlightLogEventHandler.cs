@@ -15,8 +15,6 @@ public class FlightLogEventHandler(ILogger<FlightLogEventHandler> _logger,
         {
             var flightLog = new FlightLogs
             {
-                AircraftId = notification.AircraftId, 
-                FlightRequstId = notification.FlightRequstId,
                 CallSign = notification.CallSign,
                 State = notification.State,
                 IsAccepted = notification.IsAccepted,

@@ -1,7 +1,5 @@
 ﻿using AirportControlTower.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Xml;
 
 namespace AirportControlTower.Infrastructure;
 
@@ -22,12 +20,6 @@ public class AirportControlTowerDbContext(DbContextOptions<AirportControlTowerDb
         modelBuilder.Entity<Aircraft>()
         .Property(e => e.CreatedAt)
         .HasDefaultValueSql("NOW()");
-
-        modelBuilder.Entity<FlightLogs>()
-            .HasOne(a => a.FlightRequest)
-            .WithMany(fr => fr.FlightLogs)
-            .HasForeignKey(a => a.FlightRequstId)
-            .OnDelete(DeleteBehavior.Cascade);
 
         DataSeeder.SeedData(modelBuilder);
     }

@@ -16,6 +16,8 @@ services:
       - postgres
     environment:
       - CONNECTION_STRING=User ID=admin;Password=adminamin;Server=host.docker.internal;Port=5432;Database=airport_control_tower;
+      - MAXIMUM_AIRLINER_SPOT=5
+      - MAXIMUM_PRIVATE_SPOT=10
     restart: always
     networks:
       - airport_network

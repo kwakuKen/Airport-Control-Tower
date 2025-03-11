@@ -1,4 +1,5 @@
 ﻿using AirportControlTower.Domain.Entities;
+using AirportControlTower.Domain.Enums;
 using AirportControlTower.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,7 +34,7 @@ public class AircraftRepository(AirportControlTowerDbContext _context)
             .FindAsync([id, cancellationToken], cancellationToken: cancellationToken);
     }
 
-    public async Task<FlightRequest?> GetLastFlightLogsAsync(string callSign, CancellationToken cancellationToken)
+    public async Task<FlightRequest?> GetLastFlightRequestAsync(string callSign, CancellationToken cancellationToken)
     {
         return await _context.FlightRequest
             .Where(FlightRequest => FlightRequest.CallSign == callSign)
@@ -46,4 +47,36 @@ public class AircraftRepository(AirportControlTowerDbContext _context)
         _context.FlightRequest.Update(flightRequest);
         return await _context.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<List<FlightRequest>> GetAllFlightRequstAsync(CancellationToken cancellationToken)
+    {
+        //completed cycle because i need all request that is not i a park state
+        ///when isCompletedCyle is true it means that the plan is in a park state
+        return await _context.FlightRequest
+            .Where(FlightRequest => FlightRequest.IsCompleteCycle == false) 
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<int> GetParkedAircraftCountAsync(string type, CancellationToken cancellationToken)
+    {
+        return await _context.FlightRequest
+            .CountAsync(FlightRequest => FlightRequest.Type == type &&
+            FlightRequest.State == AircraftState.PARKED.ToString() &&
+            FlightRequest.IsCompleteCycle == false, cancellationToken);
+    }
+
+    public async Task<Aircraft?> GetAircraftByCallSignAsync(string callSign, CancellationToken cancellationToken)
+    {
+        return await _context.Aircrafts
+            .Where(o => o.CallSign == callSign)
+            .OrderByDescending(x => x.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+    public async Task<FlightRequest> AddFlightRequestAsync(FlightRequest flightRequest, CancellationToken cancellationToken)
+    {
+        await _context.FlightRequest.AddAsync(flightRequest, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+        return flightRequest;
+    }
+   
 }

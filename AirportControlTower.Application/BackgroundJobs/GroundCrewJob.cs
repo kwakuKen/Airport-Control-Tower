@@ -55,8 +55,6 @@ public class GroundCrewJob : BackgroundService
                     var publisher = scope1.ServiceProvider.GetRequiredService<IPublisher>();
                     await Task.WhenAll(response.Select(o =>
                         publisher.Publish(new FlightLogEvent(
-                            AircraftId: o.AircraftId,
-                            FlightRequstId: o.Id,
                             CallSign: o.CallSign,
                             State: AircraftState.PARKED.ToString(),
                             Reason: "Cleared the runway",

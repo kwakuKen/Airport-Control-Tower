@@ -1,6 +1,6 @@
 ﻿namespace AirportControlTower.Domain.Enums;
 
-public enum PlanType
+public enum AircraftType
 {
     PRIVATE,
     AIRLINER
