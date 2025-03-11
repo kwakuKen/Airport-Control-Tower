@@ -79,4 +79,24 @@ public class AircraftRepository(AirportControlTowerDbContext _context)
         return flightRequest;
     }
    
+    public async Task<ParkingSpot?> GetParkingSpotByCallSignAsync(string callSign, CancellationToken cancellationToken)
+    {
+        return await _context.ParkingSpots
+            .Where(o => o.CallSign == callSign)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<ParkingSpot> AddParkingSportAsync(ParkingSpot parkingSpot, CancellationToken cancellationToken)
+    {
+        await _context.ParkingSpots.AddAsync(parkingSpot, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+        return parkingSpot;
+    }
+
+    public async Task<ParkingSpot> UpdateParkingSportAsync(ParkingSpot parkingSpot, CancellationToken cancellationToken)
+    {
+         _context.ParkingSpots.Update(parkingSpot);
+        await _context.SaveChangesAsync(cancellationToken);
+        return parkingSpot;
+    }
 }

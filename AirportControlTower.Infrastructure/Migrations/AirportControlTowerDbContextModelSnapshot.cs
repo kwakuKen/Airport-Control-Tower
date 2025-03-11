@@ -79,9 +79,6 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AircraftId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("CallSign")
                         .IsRequired()
                         .HasColumnType("text");
@@ -105,7 +102,7 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AircraftId");
+                    b.HasIndex("CallSign");
 
                     b.HasIndex("FlightRequestId");
 
@@ -160,6 +157,38 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.ToTable("FlightRequest");
                 });
 
+            modelBuilder.Entity("AirportControlTower.Domain.Entities.ParkingSpot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("AircraftId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("CallSign")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsOccupied")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AircraftId");
+
+                    b.HasIndex("CallSign")
+                        .IsUnique();
+
+                    b.ToTable("ParkingSpots");
+                });
+
             modelBuilder.Entity("AirportControlTower.Domain.Entities.Weather", b =>
                 {
                     b.Property<int>("Id")
@@ -195,7 +224,10 @@ namespace AirportControlTower.Infrastructure.Migrations
                 {
                     b.HasOne("AirportControlTower.Domain.Entities.Aircraft", null)
                         .WithMany("FlightLogs")
-                        .HasForeignKey("AircraftId");
+                        .HasForeignKey("CallSign")
+                        .HasPrincipalKey("CallSign")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("AirportControlTower.Domain.Entities.FlightRequest", null)
                         .WithMany("FlightLogs")
@@ -207,6 +239,22 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.HasOne("AirportControlTower.Domain.Entities.Aircraft", "Aircraft")
                         .WithMany()
                         .HasForeignKey("AircraftId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Aircraft");
+                });
+
+            modelBuilder.Entity("AirportControlTower.Domain.Entities.ParkingSpot", b =>
+                {
+                    b.HasOne("AirportControlTower.Domain.Entities.Aircraft", "Aircraft")
+                        .WithMany()
+                        .HasForeignKey("AircraftId");
+
+                    b.HasOne("AirportControlTower.Domain.Entities.Aircraft", null)
+                        .WithOne()
+                        .HasForeignKey("AirportControlTower.Domain.Entities.ParkingSpot", "CallSign")
+                        .HasPrincipalKey("AirportControlTower.Domain.Entities.Aircraft", "CallSign")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

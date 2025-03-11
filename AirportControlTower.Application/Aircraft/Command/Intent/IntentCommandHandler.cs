@@ -48,19 +48,28 @@ public sealed class IntentCommandHandler : IRequestHandler<IntentCommand, int>
 
                 var response = await _flightService.RequestTakeOff(request.CallSign, cancellationToken);
 
-                if (response.Item1)
+                if (!response.Item1)
                 {
-                    var flighRequst = new FlightRequest()
-                    {
-                        AircraftId = aircraftResult.Id,
-                        CreatedAt = DateTime.UtcNow,
-                        CallSign = request.CallSign,
-                        State = AircraftState.TAKEOFF.ToString(),
-                        Type = aircraftResult.Type!
-                    };
+                    await _mediator.Publish(new FlightLogEvent(
+                                CallSign: request.CallSign,
+                                State: request.State,
+                                Reason: response.Item2,
+                                IsAccepted: response.Item1
+                            ), cancellationToken);
 
-                    await _flightService.AddFlightRequestAsync(flighRequst, cancellationToken);
+                    return -2;
                 }
+
+                var flighRequst = new FlightRequest()
+                {
+                    AircraftId = aircraftResult.Id,
+                    CreatedAt = DateTime.UtcNow,
+                    CallSign = request.CallSign,
+                    State = AircraftState.TAKEOFF.ToString(),
+                    Type = aircraftResult.Type!
+                };
+
+                await _flightService.AddFlightRequestAsync(flighRequst, cancellationToken);
 
                 await _mediator.Publish(new FlightLogEvent(
                            CallSign: request.CallSign,
@@ -69,17 +78,28 @@ public sealed class IntentCommandHandler : IRequestHandler<IntentCommand, int>
                            IsAccepted: response.Item1
                        ), cancellationToken);
 
+                await _mediator.Publish(new ParkingSpotEvent(aircraftResult.Type!, aircraftResult.CallSign, false), cancellationToken);
+
                 return 1;
             }
             else if (request.State == AircraftState.APPROACH.ToString())
             {
                 var response = await _flightService.RequestLanding(request.CallSign, cancellationToken);
 
-                if (response.Item1)
+                if (!response.Item1)
                 {
-                    response.Item2.State = AircraftState.APPROACH.ToString();
-                    await _flightService.UpdateFlightRequestAsync(response.Item2, cancellationToken);
+                    await _mediator.Publish(new FlightLogEvent(
+                               CallSign: request.CallSign,
+                               State: request.State,
+                               Reason: response.Item3,
+                               IsAccepted: response.Item1
+                           ), cancellationToken);
+
+                    return -2;
                 }
+
+                response.Item2.State = AircraftState.APPROACH.ToString();
+                await _flightService.UpdateFlightRequestAsync(response.Item2, cancellationToken);
 
                 await _mediator.Publish(new FlightLogEvent(
                            CallSign: request.CallSign,
@@ -100,12 +120,12 @@ public sealed class IntentCommandHandler : IRequestHandler<IntentCommand, int>
                     resultValue = 1;
                 }
 
-                    await _mediator.Publish(new FlightLogEvent(
-                              CallSign: request.CallSign,
-                              State: request.State,
-                              Reason: response.Item3,
-                              IsAccepted: response.Item1
-                          ), cancellationToken);
+                await _mediator.Publish(new FlightLogEvent(
+                          CallSign: request.CallSign,
+                          State: request.State,
+                          Reason: response.Item3,
+                          IsAccepted: response.Item1
+                      ), cancellationToken);
 
                 return resultValue;
             }

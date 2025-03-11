@@ -1,4 +1,5 @@
-﻿using AirportControlTower.Domain.Enums;
+﻿using AirportControlTower.Domain.Entities;
+using AirportControlTower.Domain.Enums;
 using AirportControlTower.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,10 @@ public sealed class LocationCommandHandler(
     {
         try
         {
-            if (!ValidateRequest(request)) return -1;
+            var aircraftDetails = await aircraftReadRepository.GetAircraftByCallSignAsync(request.CallSign, cancellationToken);
+            if (aircraftDetails is null) return -1;
+
+            if (!ValidateRequest(request, aircraftDetails)) return -1;
 
             var flightRequest = await aircraftReadRepository.GetLastFlightRequestAsync(request.CallSign, cancellationToken)
                            ?? throw new ArgumentNullException("Flight request not found");
@@ -25,7 +29,6 @@ public sealed class LocationCommandHandler(
             flightRequest.Longitude = request.Longitude;
             flightRequest.Altitude = request.Altitude;
             flightRequest.Heading = request.Heading;
-            flightRequest.Type = request.Type;
 
             return await aircraftWriteRepository.UpdateFlightRequestAsync(flightRequest, cancellationToken);
         }
@@ -36,9 +39,10 @@ public sealed class LocationCommandHandler(
         return default!;
     }
 
-    private static bool ValidateRequest(LocationCommand request)
+    private static bool ValidateRequest(LocationCommand request, Domain.Entities.Aircraft aircraft)
     {
         if (request is null) return false;
+        if (aircraft.Type != request.Type) return false;
         if (!int.TryParse(request.Altitude.ToString(), out _)) return false;
         if (!int.TryParse(request.Heading.ToString(), out _)) return false;
         if (!decimal.TryParse(request.Latitude.ToString(), out _)) return false;

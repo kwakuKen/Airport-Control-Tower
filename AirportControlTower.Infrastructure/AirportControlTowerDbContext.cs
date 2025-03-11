@@ -10,6 +10,7 @@ public class AirportControlTowerDbContext(DbContextOptions<AirportControlTowerDb
     public DbSet<FlightLogs> FlightLogs { get; set; }
     public DbSet<FlightRequest> FlightRequest { get; set; }
     public DbSet<Weather> WeatherRecords { get; set; }
+    public DbSet<ParkingSpot> ParkingSpots { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -18,8 +19,20 @@ public class AirportControlTowerDbContext(DbContextOptions<AirportControlTowerDb
             .IsUnique();
 
         modelBuilder.Entity<Aircraft>()
-        .Property(e => e.CreatedAt)
-        .HasDefaultValueSql("NOW()");
+            .Property(e => e.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<FlightLogs>()
+            .HasOne<Aircraft>()
+            .WithMany(a => a.FlightLogs)
+            .HasForeignKey(fl => fl.CallSign)
+            .HasPrincipalKey(a => a.CallSign);
+
+        modelBuilder.Entity<ParkingSpot>()
+            .HasOne<Aircraft>()
+            .WithOne()
+            .HasForeignKey<ParkingSpot>(ps => ps.CallSign)
+            .HasPrincipalKey<Aircraft>(a => a.CallSign);
 
         DataSeeder.SeedData(modelBuilder);
     }

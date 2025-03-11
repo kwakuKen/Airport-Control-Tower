@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AirportControlTower.API.Controllers
 {
-    [Route("api/{callSign}/{action}")]
+    [Route("api/{callSign}")]
     [ApiController]
     public class PrivateController(ISender sender)
         : ControllerBase
     {
         private readonly ISender _sender = sender;
 
-        [HttpPut]
+        [HttpPut(nameof(Location))]
         public async Task<IActionResult> Location([FromRoute] string callSign, [FromBody] LocationCommandDto request)
         {
             var command = new LocationCommand(
@@ -29,7 +29,7 @@ namespace AirportControlTower.API.Controllers
             return result == -1 ? BadRequest() : NoContent();
         }
 
-        [HttpPut]
+        [HttpPut(nameof(Intent))]
         public async Task<IActionResult> Intent([FromRoute] string callSign, [FromBody] IntentCommandDto request)
         {
             var command = new IntentCommand(

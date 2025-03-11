@@ -53,6 +53,7 @@ public class GroundCrewJob : BackgroundService
 
                     using var scope1 = _serviceScopeFactory.CreateScope();
                     var publisher = scope1.ServiceProvider.GetRequiredService<IPublisher>();
+
                     await Task.WhenAll(response.Select(o =>
                         publisher.Publish(new FlightLogEvent(
                             CallSign: o.CallSign,
@@ -61,6 +62,15 @@ public class GroundCrewJob : BackgroundService
                             IsAccepted: true
                         ), stoppingToken)
                     ));
+
+                    await Task.WhenAll(response.Select(o =>
+                       publisher.Publish(new ParkingSpotEvent(
+                           o.Type!,
+                           o.CallSign,
+                           true
+                           ), stoppingToken)
+                    ));
+
 
 
                 }
