@@ -154,7 +154,7 @@ namespace AirportControlTower.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Password", "Username" },
-                values: new object[] { 1, "Password", "test@example.com" });
+                values: new object[] { 1, "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=", "test@example.com" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Aircrafts_CallSign",

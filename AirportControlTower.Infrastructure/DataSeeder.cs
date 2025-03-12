@@ -1,5 +1,7 @@
 ﻿using AirportControlTower.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace AirportControlTower.Infrastructure;
 
@@ -30,7 +32,7 @@ public static class DataSeeder
            {
                Id = 1,
                Username = "test@example.com",
-               Password = "Password",
+               Password = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes("password"))),
            }
        );
 

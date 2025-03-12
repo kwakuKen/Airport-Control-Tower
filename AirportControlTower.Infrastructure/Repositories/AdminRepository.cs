@@ -74,4 +74,9 @@ public class AdminRepository(AirportControlTowerDbContext context) : IAdminReadR
         return await _context.ParkingSpots
             .ToListAsync(cancellationToken);
     }
+    
+    public async Task<Users?> GetUserDetails(string username, CancellationToken cancellationToken)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+    }
 }

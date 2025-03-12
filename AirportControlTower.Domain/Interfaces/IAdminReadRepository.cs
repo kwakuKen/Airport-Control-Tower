@@ -9,4 +9,5 @@ public interface IAdminReadRepository
     Task<IEnumerable<FlightLogs>> GetAllFlightLogsAsync(CancellationToken cancellationToken);
     Task<Weather?> GetCurrentWeatherAsync(CancellationToken cancellationToken);
     Task<IEnumerable<ParkingSpot>> GetParkingSpotAsync(CancellationToken cancellationToken);
+    Task<Users?> GetUserDetails(string username, CancellationToken cancellationToken);
 }

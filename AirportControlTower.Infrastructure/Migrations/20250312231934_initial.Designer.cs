@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AirportControlTower.Infrastructure.Migrations
 {
     [DbContext(typeof(AirportControlTowerDbContext))]
-    [Migration("20250312225447_initial")]
+    [Migration("20250312231934_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -218,7 +218,7 @@ namespace AirportControlTower.Infrastructure.Migrations
                         {
                             Id = 1,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Password = "Password",
+                            Password = "XohImNooBHFR0OVvjcYpJ3NgPQ1qq73WKhHvch0VQtg=",
                             Username = "test@example.com"
                         });
                 });

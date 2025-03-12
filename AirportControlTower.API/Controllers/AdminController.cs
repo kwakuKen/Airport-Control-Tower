@@ -1,4 +1,5 @@
-﻿using AirportControlTower.Application.Admin.Query.AircraftList;
+﻿using AirportControlTower.Application.Admin.Command.Login;
+using AirportControlTower.Application.Admin.Query.AircraftList;
 using AirportControlTower.Application.Admin.Query.AircraftLogs;
 using AirportControlTower.Application.Admin.Query.LastTenFlightLogs;
 using AirportControlTower.Application.Admin.Query.ParkingSpot;
@@ -15,6 +16,13 @@ public class AdminController(ISender sender)
     : ControllerBase
 {
     private readonly ISender _sender = sender;
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginCommand command)
+    {
+        var result = await _sender.Send(command);
+        return Ok(result);
+    }
 
     [HttpGet("list-aircraft")]
     public async Task<IActionResult> ListAircraft()
