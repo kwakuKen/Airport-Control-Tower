@@ -5,7 +5,7 @@ namespace AirportControlTower.Infrastructure;
 
 public static class DataSeeder
 {
-    
+
     public static void SeedData(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Aircraft>().HasData(
@@ -24,5 +24,15 @@ public static class DataSeeder
                 PublicKey = "AAAAB3NzaC1yc2E"
             }
         );
+
+        modelBuilder.Entity<Users>().HasData(
+           new Users
+           {
+               Id = 1,
+               Username = "test@example.com",
+               Password = "Password",
+           }
+       );
+
     }
 }

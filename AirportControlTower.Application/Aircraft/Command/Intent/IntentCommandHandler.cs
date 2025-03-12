@@ -78,7 +78,7 @@ public sealed class IntentCommandHandler : IRequestHandler<IntentCommand, int>
                            IsAccepted: response.Item1
                        ), cancellationToken);
 
-                await _mediator.Publish(new ParkingSpotEvent(aircraftResult.Type!, aircraftResult.CallSign, false), cancellationToken);
+                await _mediator.Publish(new ParkingSpotEvent(aircraftResult.Type!, aircraftResult.CallSign, false, true), cancellationToken);
 
                 return 1;
             }

@@ -3,6 +3,8 @@ using AirportControlTower.Domain.Events;
 using AirportControlTower.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Net.Mail;
+using System.Net.Security;
 
 namespace AirportControlTower.Application.Aircraft.Command.Events;
 
@@ -19,20 +21,21 @@ public sealed class ParkingSpotEventHandler(
             var aircraftDetail = await aircraftReadRepository.GetAircraftByCallSignAsync(notification.CallSign, cancellationToken);
             if (aircraftDetail is null) return;
 
-            var parkingDetails = await aircraftReadRepository.GetParkingSpotByCallSignAsync(notification.CallSign, cancellationToken);
-            if (parkingDetails is null)
-            {
-                var newParkingSpot = new ParkingSpot
-                {
-                    Type = notification.Type,
-                    CallSign = notification.CallSign,
-                    IsOccupied = notification.IsOccupied
-                };
-                await aircraftWriteRepository.AddParkingSportAsync(newParkingSpot, cancellationToken);
-            }
+            var parkingDetails = new ParkingSpot();
+            //get by type and isoccupied is false first or default
+            //then update the record with the callsign
+            if (notification.IsTakeOff)
+                parkingDetails = await aircraftReadRepository.GetParkingSpotByCallSignAsync(notification.CallSign, cancellationToken);
             else
+                parkingDetails = await aircraftReadRepository.GetParkingSpotByTypeAsyc(notification.Type, cancellationToken);
+            if (parkingDetails is not null)
             {
-                parkingDetails.IsOccupied = notification.IsOccupied;
+                if (notification.IsTakeOff)
+                    parkingDetails!.CallSign = string.Empty;
+                else
+                    parkingDetails!.CallSign = notification.CallSign;
+
+                parkingDetails!.IsOccupied = notification.IsOccupied;
                 await aircraftWriteRepository.UpdateParkingSportAsync(parkingDetails, cancellationToken);
             }
         }

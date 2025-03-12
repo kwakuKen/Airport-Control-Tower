@@ -67,7 +67,8 @@ public class GroundCrewJob : BackgroundService
                        publisher.Publish(new ParkingSpotEvent(
                            o.Type!,
                            o.CallSign,
-                           true
+                           true,
+                           false
                            ), stoppingToken)
                     ));
 

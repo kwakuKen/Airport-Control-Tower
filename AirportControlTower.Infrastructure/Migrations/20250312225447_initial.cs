@@ -32,6 +32,21 @@ namespace AirportControlTower.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "WeatherRecords",
                 columns: table => new
                 {
@@ -85,7 +100,7 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Type = table.Column<string>(type: "text", nullable: false),
                     IsOccupied = table.Column<bool>(type: "boolean", nullable: false),
-                    CallSign = table.Column<string>(type: "text", nullable: false),
+                    CallSign = table.Column<string>(type: "text", nullable: true),
                     AircraftId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -96,12 +111,6 @@ namespace AirportControlTower.Infrastructure.Migrations
                         column: x => x.AircraftId,
                         principalTable: "Aircrafts",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ParkingSpots_Aircrafts_CallSign",
-                        column: x => x.CallSign,
-                        principalTable: "Aircrafts",
-                        principalColumn: "CallSign",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -142,6 +151,11 @@ namespace AirportControlTower.Infrastructure.Migrations
                     { 2, "NC9222", "AAAAB3NzaC1yc2E", "PRIVATE" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Password", "Username" },
+                values: new object[] { 1, "Password", "test@example.com" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Aircrafts_CallSign",
                 table: "Aircrafts",
@@ -167,12 +181,6 @@ namespace AirportControlTower.Infrastructure.Migrations
                 name: "IX_ParkingSpots_AircraftId",
                 table: "ParkingSpots",
                 column: "AircraftId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ParkingSpots_CallSign",
-                table: "ParkingSpots",
-                column: "CallSign",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -183,6 +191,9 @@ namespace AirportControlTower.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ParkingSpots");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "WeatherRecords");

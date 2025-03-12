@@ -53,7 +53,7 @@ public class AircraftRepository(AirportControlTowerDbContext _context)
         //completed cycle because i need all request that is not i a park state
         ///when isCompletedCyle is true it means that the plan is in a park state
         return await _context.FlightRequest
-            .Where(FlightRequest => FlightRequest.IsCompleteCycle == false) 
+            .Where(FlightRequest => FlightRequest.IsCompleteCycle == false)
             .ToListAsync(cancellationToken);
     }
 
@@ -78,11 +78,18 @@ public class AircraftRepository(AirportControlTowerDbContext _context)
         await _context.SaveChangesAsync(cancellationToken);
         return flightRequest;
     }
-   
+
     public async Task<ParkingSpot?> GetParkingSpotByCallSignAsync(string callSign, CancellationToken cancellationToken)
     {
         return await _context.ParkingSpots
             .Where(o => o.CallSign == callSign)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<ParkingSpot?> GetParkingSpotByTypeAsyc(string type, CancellationToken cancellationToken)
+    {
+        return await _context.ParkingSpots
+            .Where(o => o.Type == type && o.IsOccupied == false)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -95,7 +102,7 @@ public class AircraftRepository(AirportControlTowerDbContext _context)
 
     public async Task<ParkingSpot> UpdateParkingSportAsync(ParkingSpot parkingSpot, CancellationToken cancellationToken)
     {
-         _context.ParkingSpots.Update(parkingSpot);
+        _context.ParkingSpots.Update(parkingSpot);
         await _context.SaveChangesAsync(cancellationToken);
         return parkingSpot;
     }

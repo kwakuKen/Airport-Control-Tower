@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AirportControlTower.Infrastructure.Migrations
 {
     [DbContext(typeof(AirportControlTowerDbContext))]
-    [Migration("20250311090816_initial")]
+    [Migration("20250312225447_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -172,7 +172,6 @@ namespace AirportControlTower.Infrastructure.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("CallSign")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsOccupied")
@@ -186,10 +185,42 @@ namespace AirportControlTower.Infrastructure.Migrations
 
                     b.HasIndex("AircraftId");
 
-                    b.HasIndex("CallSign")
-                        .IsUnique();
-
                     b.ToTable("ParkingSpots");
+                });
+
+            modelBuilder.Entity("AirportControlTower.Domain.Entities.Users", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("NOW()");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Password = "Password",
+                            Username = "test@example.com"
+                        });
                 });
 
             modelBuilder.Entity("AirportControlTower.Domain.Entities.Weather", b =>
@@ -253,13 +284,6 @@ namespace AirportControlTower.Infrastructure.Migrations
                     b.HasOne("AirportControlTower.Domain.Entities.Aircraft", "Aircraft")
                         .WithMany()
                         .HasForeignKey("AircraftId");
-
-                    b.HasOne("AirportControlTower.Domain.Entities.Aircraft", null)
-                        .WithOne()
-                        .HasForeignKey("AirportControlTower.Domain.Entities.ParkingSpot", "CallSign")
-                        .HasPrincipalKey("AirportControlTower.Domain.Entities.Aircraft", "CallSign")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Aircraft");
                 });

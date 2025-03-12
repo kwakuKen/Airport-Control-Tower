@@ -13,6 +13,12 @@ builder.Services
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AirportControlTowerDbContext>();
+    await dbContext.SeedParkingSpotsAsync(); 
+}
+
 app.UseMiddleware<ApiKeyMiddleware>();
 
 // Configure the HTTP request pipeline.

@@ -17,7 +17,8 @@ public class ApiKeyMiddleware
     public async Task Invoke(HttpContext context)
     {
         // Bypass authentication for public endpoints
-        if (context.Request.Path.StartsWithSegments("/api/public"))
+        if (context.Request.Path.StartsWithSegments("/api/public") ||
+            context.Request.Path.StartsWithSegments("/api/admin"))
         {
             await _next(context);
             return;

@@ -13,4 +13,5 @@ public interface IAircraftReadRepository
     Task<int> GetParkedAircraftCountAsync(string type, CancellationToken cancellationToken);
     Task<Aircraft?> GetAircraftByCallSignAsync(string callSign, CancellationToken cancellationToken);
     Task<ParkingSpot?> GetParkingSpotByCallSignAsync(string callSign, CancellationToken cancellationToken);
+    Task<ParkingSpot?> GetParkingSpotByTypeAsyc(string type, CancellationToken cancellationToken);
 }

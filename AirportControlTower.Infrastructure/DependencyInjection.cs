@@ -25,6 +25,7 @@ public static class DependencyInjection
             var context = serviceProvider.GetRequiredService<AirportControlTowerDbContext>();
             context.Database.Migrate();
         }
+       
 
         services.AddSingleton<IHostedService, GetWeatherUpdateJob>();
 
@@ -33,6 +34,7 @@ public static class DependencyInjection
         services.AddScoped<IWeatherWriteRepository, WeatherRepository>();
         services.AddScoped<IWeatherReadRepository, WeatherRepository>();
         services.AddScoped<IGroundCrewRepository, GroundCrewRepository>();
+        services.AddScoped<IAdminReadRepository, AdminRepository>();
 
 
 
