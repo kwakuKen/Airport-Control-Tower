@@ -62,7 +62,7 @@ public class FlightService(
             return (false, default!, $"Aircraft with call sign {callSign} is not airborne");
         }
 
-        int availableSpots = await aircraftReadRepository.GetParkedAircraftCountAsync(lastAircraftRequest.Type!, cancellationToken);
+        int availableSpots = await aircraftReadRepository.GetAvailableParkingSpotAsync(lastAircraftRequest.Type!, cancellationToken);
 
         int maxSpots = lastAircraftRequest.Type == AircraftType.AIRLINER.ToString() ?
             int.Parse(Environment.GetEnvironmentVariable("MAXIMUM_AIRLINER_SPOT")!) :

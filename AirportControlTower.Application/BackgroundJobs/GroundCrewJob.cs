@@ -61,7 +61,7 @@ public class GroundCrewJob : BackgroundService
                             Reason: "Cleared the runway",
                             IsAccepted: true
                         ), stoppingToken)
-                    ));
+                    ).ToList());
 
                     await Task.WhenAll(response.Select(o =>
                        publisher.Publish(new ParkingSpotEvent(
@@ -70,7 +70,7 @@ public class GroundCrewJob : BackgroundService
                            true,
                            false
                            ), stoppingToken)
-                    ));
+                    ).ToList());
 
 
 

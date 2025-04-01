@@ -57,12 +57,11 @@ public class AircraftRepository(AirportControlTowerDbContext _context)
             .ToListAsync(cancellationToken);
     }
 
-    public async Task<int> GetParkedAircraftCountAsync(string type, CancellationToken cancellationToken)
+    public async Task<int> GetAvailableParkingSpotAsync(string type, CancellationToken cancellationToken)
     {
-        return await _context.FlightRequest
-            .CountAsync(FlightRequest => FlightRequest.Type == type &&
-            FlightRequest.State == AircraftState.PARKED.ToString() &&
-            FlightRequest.IsCompleteCycle == false, cancellationToken);
+        return await _context.ParkingSpots
+            .CountAsync(p => p.Type == type &&
+            p.IsOccupied == false, cancellationToken);
     }
 
     public async Task<Aircraft?> GetAircraftByCallSignAsync(string callSign, CancellationToken cancellationToken)

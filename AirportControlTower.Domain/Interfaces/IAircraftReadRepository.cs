@@ -10,8 +10,8 @@ public interface IAircraftReadRepository
     Task<FlightLogs?> GetFlightLogsByIdAsync(int id, CancellationToken cancellationToken);
     Task<FlightRequest?> GetLastFlightRequestAsync(string callSign, CancellationToken cancellationToken);
     Task<List<FlightRequest>> GetAllFlightRequstAsync(CancellationToken cancellationToken);
-    Task<int> GetParkedAircraftCountAsync(string type, CancellationToken cancellationToken);
     Task<Aircraft?> GetAircraftByCallSignAsync(string callSign, CancellationToken cancellationToken);
     Task<ParkingSpot?> GetParkingSpotByCallSignAsync(string callSign, CancellationToken cancellationToken);
     Task<ParkingSpot?> GetParkingSpotByTypeAsyc(string type, CancellationToken cancellationToken);
+    Task<int> GetAvailableParkingSpotAsync(string type, CancellationToken cancellationToken);
 }

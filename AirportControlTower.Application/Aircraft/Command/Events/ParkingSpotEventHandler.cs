@@ -31,7 +31,7 @@ public sealed class ParkingSpotEventHandler(
             if (parkingDetails is not null)
             {
                 if (notification.IsTakeOff)
-                    parkingDetails!.CallSign = string.Empty;
+                    parkingDetails!.CallSign = null;
                 else
                     parkingDetails!.CallSign = notification.CallSign;
 
