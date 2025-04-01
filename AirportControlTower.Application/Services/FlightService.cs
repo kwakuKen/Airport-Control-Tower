@@ -64,11 +64,7 @@ public class FlightService(
 
         int availableSpots = await aircraftReadRepository.GetAvailableParkingSpotAsync(lastAircraftRequest.Type!, cancellationToken);
 
-        int maxSpots = lastAircraftRequest.Type == AircraftType.AIRLINER.ToString() ?
-            int.Parse(Environment.GetEnvironmentVariable("MAXIMUM_AIRLINER_SPOT")!) :
-            int.Parse(Environment.GetEnvironmentVariable("MAXIMUM_PRIVATE_SPOT")!);
-
-        if (availableSpots >= maxSpots)
+        if (availableSpots < 1)
         {
             return (false, default!, "No available parking");
         }
