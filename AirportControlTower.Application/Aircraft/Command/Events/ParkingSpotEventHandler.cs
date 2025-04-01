@@ -3,8 +3,6 @@ using AirportControlTower.Domain.Events;
 using AirportControlTower.Domain.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System.Net.Mail;
-using System.Net.Security;
 
 namespace AirportControlTower.Application.Aircraft.Command.Events;
 
@@ -22,8 +20,7 @@ public sealed class ParkingSpotEventHandler(
             if (aircraftDetail is null) return;
 
             var parkingDetails = new ParkingSpot();
-            //get by type and isoccupied is false first or default
-            //then update the record with the callsign
+           
             if (notification.IsTakeOff)
                 parkingDetails = await aircraftReadRepository.GetParkingSpotByCallSignAsync(notification.CallSign, cancellationToken);
             else
